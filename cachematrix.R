@@ -1,29 +1,31 @@
-## Put comments here that give an overall description of what your 
-## functions do version 1
+##Matrix inversion is usually a costly computation and these functions create a special matrix with getInverse and setInverse to cache the matrix inverse. 
 
-## Write a short comment describing this function
 
+## This function creates a special matrix. Special matrix can be used as x$getInverse. This function uses matrixcalc package
+## install the package and load the library with library(matrixcalc) 
 makeCacheMatrix <- function(x = matrix()) {
+
 ## Return error if the matrix is not invertible 
+	
+		## Return error if the matrix is not invertible 
 	
 	 if (det(x) == 0 ) {return ("Error: matrix is not invertible")}
 	
-	## Return error if the library is not installed 
-	if(!require('matrixcalc')) {
-  		return ("Error: matrixcalc package not found")
-	}
-	
+		
 	## Reset the cached variable 
         m <- NULL
 	
-        set <- function(y) {
+      ## this resets the environment cache for the matrix  
+	 set <- function(y) {
                 x <<- y
                 m <<- NULL
         }
-        get <- function() x
+      ## returns cached matrix  
+	 get <- function() x
 
 	
-        setInverse <- function(matrix.inverse) m <<- matrix.inverse
+      ## calculates inverse  
+	setInverse <- function(solve) m <<- solve
         getInverse <- function() m
         list(set = set, get = get,
              setInverse = setInverse,
@@ -32,19 +34,26 @@ makeCacheMatrix <- function(x = matrix()) {
 }
 
 
-## Write a short comment describing this function
+##This function computes the inverse of the special "matrix" returned by makeCacheMatrix above. 
+##This function returns the inverse, If the inverse has already been calculated (and the matrix has not changed), then the cachesolve will retrieve the inverse from the cache.
 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
- 	  m <- x$getInverse()
+       
+ 	    m <- x$getInverse()
+	
+	 ## returns value from cache if exists 
         if(!is.null(m)) {
                 message("getting cached data")
                 return(m)
         }
-        data <- x$get()
-        m <- matrix.inverse(data, ...)
+       
+	 data <- x$get()
+	 ## calculates inverse of the matrix 
+        m <- solve(data, ...)
         x$setInverse(m)
+	 ## Return a matrix that is the inverse of 'x'
         m
+
 
 
 }
